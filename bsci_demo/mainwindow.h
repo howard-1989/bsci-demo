@@ -26,6 +26,9 @@ public:
     QString lastUsbPath;
     QString sourceDir;
 
+private slots:
+    void on_btn_changepassword_clicked();
+
 private:
     Ui::MainWindow *ui;
 };

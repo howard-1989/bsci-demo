@@ -1,5 +1,12 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "setpassworddialog.h"
+#include <QInputDialog>
+#include <QCryptographicHash>
+#include <QFile>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QMessageBox>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -55,7 +62,7 @@ QString MainWindow::detectUsbPath()
 
 bool MainWindow::copyRecursively(const QString &srcPath, const QString &dstPath)
 {
-    printf("copy image\n");
+//    printf("copy image\n");
 
     QDir srcDir(srcPath);
         QStringList files = srcDir.entryList(QDir::Files | QDir::Dirs | QDir::NoDotAndDotDot);
@@ -108,4 +115,43 @@ void MainWindow::checkUsb()
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::on_btn_changepassword_clicked()
+{
+    QFile file("config.json");
+    if (!file.open(QIODevice::ReadOnly)) {
+        return;
+    }
+
+    QJsonDocument doc = QJsonDocument::fromJson(file.readAll());
+    QJsonObject obj = doc.object();
+    file.close();
+
+    QString savedUser = obj["username"].toString();
+    QString savedHash = obj["password_hash"].toString();
+
+    bool okUser;
+    QString oldUser = QInputDialog::getText(this, "Verify User", "Username:", QLineEdit::Normal, "", &okUser );
+
+    bool okPass;
+    QString oldPass = QInputDialog::getText(this, "Verify Password", "Password:", QLineEdit::Password, "", &okPass);
+
+    if(!okUser || !okPass || oldPass.isEmpty() || oldUser.isEmpty()) {
+        QMessageBox::critical(this, "Username or Password empty!!", "Please Try Again!!");
+        return;
+    }
+
+    QByteArray oldHash = QCryptographicHash::hash(oldPass.toUtf8(), QCryptographicHash::Sha256).toHex();
+
+    if(oldUser != savedUser || oldHash != savedHash) {
+        QMessageBox::critical(this, "Username or Password Error!!", "Please Try Again!!");
+        return;
+    }
+
+    SetPasswordDialog dlg(this);
+
+    if(dlg.exec() == QDialog::Accepted) {
+        QMessageBox::information(this, "Success!!", "Username & Password has been changed!!");
+    }
 }

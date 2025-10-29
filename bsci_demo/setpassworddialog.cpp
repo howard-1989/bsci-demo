@@ -29,7 +29,12 @@ void SetPasswordDialog::on_Save_clicked()
     QString pass = ui->password->text();
     QString confirm = ui->confirm->text();
 
-    if (pass != confirm) {
+    if(user.isEmpty() || pass.isEmpty()) {
+        ui->statusLabel->setText("Username or Password cannot be empty !!");
+        return;
+    }
+
+    if(pass != confirm) {
         ui->statusLabel->setText("Password Not Same !!");
         return;
     }

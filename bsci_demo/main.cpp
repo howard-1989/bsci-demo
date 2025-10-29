@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
     if (!hasConfig()) {
         SetPasswordDialog setDialog;
         if (setDialog.exec() != QDialog::Accepted)
-        return 0; // 未設定就結束
+        return 0;
     }
 
     LoginDialog login;
