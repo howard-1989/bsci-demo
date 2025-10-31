@@ -27,14 +27,24 @@ SOURCES += \
         main.cpp \
         mainwindow.cpp \
     setpassworddialog.cpp \
-    logindialog.cpp
+    logindialog.cpp \
+    aspectratioframe.cpp
 
 HEADERS += \
         mainwindow.h \
     setpassworddialog.h \
-    logindialog.h
+    logindialog.h \
+    aspectratioframe.h
 
 FORMS += \
         mainwindow.ui \
     setpassworddialog.ui \
     logindialog.ui
+
+INCLUDEPATH +=\
+              $$PWD/../include/
+
+QMAKE_LFLAGS += '-Wl,-rpath-link,../lib'
+
+LIBS += -L"../lib/" -lqcap \
+
