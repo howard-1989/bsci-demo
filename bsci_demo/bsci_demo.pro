@@ -49,7 +49,8 @@ HEADERS += \
     processinference.h \
     setpassworddialog.h \
     logindialog.h \
-    aspectratioframe.h
+    aspectratioframe.h \
+    testkit.h
 
 FORMS += \
         mainwindow.ui \
